@@ -40,7 +40,7 @@ setup(
     description='Test API Iris',
     classifiers=[
         'Environment :: Console',
-        'Development Status :: 1 - Planning Development Status',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
         'Natural Language :: English',
