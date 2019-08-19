@@ -6,9 +6,10 @@ import platform
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = 'mattapi'
-PACKAGE_VERSION = '0.2'
+PACKAGE_VERSION = '0.3'
 
 INSTALL_REQUIRES = [
+'coloredlogs==10.0',
 'pyautogui==0.9.41',
 'python-dateutil==2.8.0',
 'opencv-python==4.0.0.21',
@@ -18,7 +19,16 @@ INSTALL_REQUIRES = [
 'pyperclip==1.7.0',
 'packaging==19.0',
 'pynput==1.4',
+'gitpython==2.1.11',
+'pytest==5.0.1',
+'pygithub==1.43.8',
+'bugzilla==1.0.0',
 'mozinfo==1.0.0',
+'mozinstall==2.0.0',
+'mozdownload==1.26',
+'mozversion==2.1.0',
+'mozlog==4.2.0',
+'mozrunner==7.4.0',
 'mss==4.0.1',
 'more-itertools==5.0.0',
 'psutil==5.6.3',
@@ -69,6 +79,11 @@ setup(
     tests_require=TESTS_REQUIRE,
     extras_require={'dev': DEV_REQUIRES},  # For `pip install -e .[dev]`
     entry_points={
-        'console_scripts': []
+        'console_scripts': [
+            'test = mattapi.scripts.test:foo',
+            'lite = mattapi.scripts.test:main',
+            'iris = mattapi.scripts.__main__:main',
+            'api = mattapi.scripts.some_test:my_test'
+        ]
     }
 )
