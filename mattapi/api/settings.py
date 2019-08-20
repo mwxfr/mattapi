@@ -2,7 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import inspect
 import logging
+import os
 import tempfile
 
 from mattapi.api.enums import Color
@@ -113,6 +115,7 @@ class _Settings:
         self.virtual_keyboard = False
         self.debug_image = False
         self.debug_image_path = _create_tempdir()
+        self.code_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
 
     @property
     def click_delay(self):
@@ -194,6 +197,19 @@ class _Settings:
     @virtual_keyboard.setter
     def virtual_keyboard(self, value):
         self._virtual_keyboard = value
+
+    @property
+    def code_root(self):
+        return self._code_root
+
+    @code_root.setter
+    def code_root(self, value):
+        self._code_root = value
+
+    @staticmethod
+    def set_code_root_from_caller():
+        caller = inspect.stack()[1][1]
+        Settings.code_root = os.path.split(caller)[0]
 
 
 Settings = _Settings()

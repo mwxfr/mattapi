@@ -13,6 +13,7 @@ import tempfile
 import git
 
 from mattapi.api.os_helpers import OSHelper
+from mattapi.api.settings import Settings
 from mattapi.util.arg_parser import get_core_args
 
 logger = logging.getLogger(__name__)
@@ -59,9 +60,9 @@ class PathManager:
     @staticmethod
     def get_module_dir():
         """Returns the path to the root of the local Iris repo."""
-        module_dir = os.path.realpath(os.path.split(__file__)[0] + '/../..')
-        logger.debug('Module dir: %s' % module_dir)
-        return module_dir
+        #module_dir = os.path.realpath(os.path.split(__file__)[0] + '/../..')
+        #logger.debug('Module dir: %s' % module_dir)
+        return Settings.code_root
 
     @staticmethod
     def get_tests_dir():

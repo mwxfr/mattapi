@@ -6,7 +6,7 @@ import platform
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = 'mattapi'
-PACKAGE_VERSION = '0.5'
+PACKAGE_VERSION = '0.6'
 
 INSTALL_REQUIRES = [
 'coloredlogs==10.0',

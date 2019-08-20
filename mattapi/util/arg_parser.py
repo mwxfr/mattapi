@@ -8,6 +8,7 @@ import logging
 import os
 
 from mattapi.api.os_helpers import OSHelper
+from mattapi.api.settings import Settings
 
 logger = logging.getLogger(__name__)
 iris_args = None
@@ -29,7 +30,8 @@ def get_core_args():
         return log_level_int
 
     parser = argparse.ArgumentParser(description='Iris core arguments', prog='iris')
-    repo_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
+    #repo_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
+    repo_root = Settings.code_root
     repo_name = os.path.basename(repo_root)
     logger.debug('Repo root: %s' % repo_root)
     logger.debug('Repo name: %s' % repo_name)
