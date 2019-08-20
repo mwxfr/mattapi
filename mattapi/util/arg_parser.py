@@ -31,7 +31,10 @@ def get_core_args():
     parser = argparse.ArgumentParser(description='Iris core arguments', prog='iris')
     repo_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
     repo_name = os.path.basename(repo_root)
+    logger.debug('Repo root: %s' % repo_root)
+    logger.debug('Repo name: %s' % repo_name)
     target_dir = os.path.join(repo_root, 'targets')
+    logger.debug('Target dir: %s' % target_dir)
     target_list = [f.path for f in os.scandir(target_dir) if f.is_dir()]
     for idx, target in enumerate(target_list):
         target_list[idx] = os.path.basename(os.path.normpath(target))
