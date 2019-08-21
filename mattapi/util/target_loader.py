@@ -6,6 +6,7 @@
 import logging
 import os
 
+from mattapi.api.settings import Settings
 from mattapi.util.arg_parser import get_core_args
 from mattapi.util.path_manager import PathManager
 
@@ -23,7 +24,25 @@ def load_target(target: str = None):
         logger.debug('%s target module found!' % target)
         return True
 
-    logger.critical('Iris doesn\'t contain %s target module' % target)
+    repo_root = Settings.code_root
+    repo_name = os.path.basename(repo_root)
+    logger.debug('Repo root: %s' % repo_root)
+    logger.debug('Repo name: %s' % repo_name)
+    target_dir = os.path.join(repo_root, 'targets')
+    logger.debug('Target dir: %s' % target_dir)
+    target_list = [f.path for f in os.scandir(target_dir) if f.is_dir()]
+    target_names = []
+    logger.critical('\nIris doesn\'t contain \'%s\' target module.' % target)
+
+    for idx, target in enumerate(target_list):
+        if 'pycache' not in target:
+            target_names.append(os.path.basename(os.path.normpath(target)))
+
+    logger.critical('Did you mean to choose one of these instead?')
+    for target in target_names:
+        logger.critical('\t%s' % target)
+    logger.critical('')
+
     return False
 
 
@@ -42,6 +61,13 @@ def collect_tests():
             f.close()
         else:
             tests_dir = os.path.join(PathManager.get_tests_dir(), target)
+            if not os.path.exists(tests_dir):
+                logger.error('Path not found: %s' % tests_dir)
+                logger.critical('This can happen when Iris can\'t find your code root.')
+                logger.critical('Try setting this environment variable on your next run:')
+                logger.critical('\texport IRIS_CODE_ROOT=$PWD\n')
+                return test_list
+
             logger.debug('Path %s found. Checking content ...', tests_dir)
             for dir_path, sub_dirs, all_files in PathManager.sorted_walk(tests_dir):
                 for current_file in all_files:

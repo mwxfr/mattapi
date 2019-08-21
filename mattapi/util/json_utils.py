@@ -175,7 +175,14 @@ def convert_test_list(test_list, only_failures=False):
     for test in test_list:
         test_failed = True if 'FAILED' in test.outcome or 'ERROR' in test.outcome else False
         original_path = str(test.item.__dict__.get('fspath'))
-        target_root = original_path.split(test_root)[1]
+        try:
+            target_root = original_path.split(test_root)[1]
+        except IndexError:
+            logger.error('Error parsing test list.')
+            logger.error('Try resetting your PYTHONPATH before your next run, i.e.:')
+            logger.error('\texport PYTHONPATH=$PWD')
+            return tests
+
         target = target_root.split(os.sep)[1]
         test_path = target_root.split('%s%s%s' % (os.sep, target, os.sep))[1]
         parent = tests

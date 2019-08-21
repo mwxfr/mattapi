@@ -30,18 +30,12 @@ def get_core_args():
         return log_level_int
 
     parser = argparse.ArgumentParser(description='Iris core arguments', prog='iris')
-    #repo_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
     repo_root = Settings.code_root
     repo_name = os.path.basename(repo_root)
     logger.debug('Repo root: %s' % repo_root)
     logger.debug('Repo name: %s' % repo_name)
-    target_dir = os.path.join(repo_root, 'targets')
-    logger.debug('Target dir: %s' % target_dir)
-    target_list = [f.path for f in os.scandir(target_dir) if f.is_dir()]
-    for idx, target in enumerate(target_list):
-        target_list[idx] = os.path.basename(os.path.normpath(target))
 
-    parser.add_argument('target', nargs='?', action='store', type=str, help='Target name', choices=target_list)
+    parser.add_argument('target', nargs='?', action='store', type=str, help='Target name')
 
     parser.add_argument('-a', '--rerun',
                         help='Rerun last failed tests',
@@ -88,6 +82,11 @@ def get_core_args():
                         type=int,
                         action='store',
                         default=2000)
+    parser.add_argument('-q', '--code_root',
+                        help='Path to code root',
+                        type=os.path.abspath,
+                        action='store',
+                        default=None)
     parser.add_argument('-t', '--test',
                         help='Partial or full test names or paths to execute',
                         action='store',

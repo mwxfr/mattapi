@@ -60,8 +60,6 @@ class PathManager:
     @staticmethod
     def get_module_dir():
         """Returns the path to the root of the local Iris repo."""
-        #module_dir = os.path.realpath(os.path.split(__file__)[0] + '/../..')
-        #logger.debug('Module dir: %s' % module_dir)
         return Settings.code_root
 
     @staticmethod

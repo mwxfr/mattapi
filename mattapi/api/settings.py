@@ -5,6 +5,7 @@
 import inspect
 import logging
 import os
+import sys
 import tempfile
 
 from mattapi.api.enums import Color
@@ -115,7 +116,11 @@ class _Settings:
         self.virtual_keyboard = False
         self.debug_image = False
         self.debug_image_path = _create_tempdir()
-        self.code_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
+        if os.environ.get('IRIS_CODE_ROOT') is not None:
+            self._code_root = os.environ.get('IRIS_CODE_ROOT')
+        else:
+            self._code_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
+        sys.path.append(self._code_root)
 
     @property
     def click_delay(self):
@@ -205,6 +210,7 @@ class _Settings:
     @code_root.setter
     def code_root(self, value):
         self._code_root = value
+        sys.path.append(self._code_root)
 
     @staticmethod
     def set_code_root_from_caller():

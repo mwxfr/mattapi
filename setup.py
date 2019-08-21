@@ -6,7 +6,7 @@ import platform
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = 'mattapi'
-PACKAGE_VERSION = '0.6'
+PACKAGE_VERSION = '0.91'
 
 INSTALL_REQUIRES = [
 'coloredlogs==10.0',
@@ -80,7 +80,7 @@ setup(
     extras_require={'dev': DEV_REQUIRES},  # For `pip install -e .[dev]`
     entry_points={
         'console_scripts': [
-            'test = mattapi.scripts.test:foo',
+            'hi = mattapi.scripts.test:test',
             'lite = mattapi.scripts.test:main',
             'iris = mattapi.scripts.__main__:main',
             'api = mattapi.scripts.some_test:my_test'
