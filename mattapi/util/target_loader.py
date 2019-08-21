@@ -6,6 +6,7 @@
 import logging
 import os
 
+from mattapi.api.os_helpers import OSHelper
 from mattapi.api.settings import Settings
 from mattapi.util.arg_parser import get_core_args
 from mattapi.util.path_manager import PathManager
@@ -64,8 +65,14 @@ def collect_tests():
             if not os.path.exists(tests_dir):
                 logger.error('Path not found: %s' % tests_dir)
                 logger.critical('This can happen when Iris can\'t find your code root.')
-                logger.critical('Try setting this environment variable on your next run:')
-                logger.critical('\texport IRIS_CODE_ROOT=$PWD\n')
+                logger.critical('Try setting these environment variables:')
+                if OSHelper.is_windows():
+                    logger.critical('\tsetx IRIS_CODE_ROOT %CD%\n')
+                    logger.critical('\tsetx PYTHONPATH %CD%\n')
+                    logger.critical('\nYou must restart your terminal for this to take effect.\n')
+                else:
+                    logger.critical('\texport IRIS_CODE_ROOT=$PWD\n')
+                    logger.critical('\texport PYTHONPATH=$PWD\n')
                 return test_list
 
             logger.debug('Path %s found. Checking content ...', tests_dir)

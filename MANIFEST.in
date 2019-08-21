@@ -1,0 +1,9 @@
+include mattapi/control_center/assets/*
+include mattapi/control_center/assets/images/*
+include mattapi/control_center/assets/static/*
+include mattapi/control_center/assets/static/css/*
+include mattapi/control_center/assets/static/js/*
+include mattapi/control_center/assets/static/media/*
+
+prune tests
+prune targets
