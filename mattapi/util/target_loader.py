@@ -18,33 +18,38 @@ core_args = get_core_args()
 def load_target(target: str = None):
     """Checks if provided target exists."""
     if target is None:
-        logger.warning('No target provided. Launching Firefox target by default')
+        logger.warning('No target provided. Exiting Iris.')
+    else:
         target = core_args.target
-    target_dir = os.path.join(PathManager.get_module_dir(), 'targets', target)
-    if os.path.exists(target_dir):
-        logger.debug('%s target module found!' % target)
-        return True
+        target_dir = os.path.join(PathManager.get_module_dir(), 'targets', target)
+        if os.path.exists(target_dir):
+            logger.debug('%s target module found!' % target)
+            return True
+        else:
+            targets_dir = os.path.join(PathManager.get_module_dir(), 'targets')
+            if os.path.exists(targets_dir):
+                repo_root = Settings.code_root
+                repo_name = os.path.basename(repo_root)
+                logger.debug('Repo root: %s' % repo_root)
+                logger.debug('Repo name: %s' % repo_name)
+                logger.debug('Target dir: %s' % targets_dir)
+                target_list = [f.path for f in os.scandir(targets_dir) if f.is_dir()]
+                target_names = []
+                logger.critical('\nIris doesn\'t contain \'%s\' target module.' % target)
 
-    repo_root = Settings.code_root
-    repo_name = os.path.basename(repo_root)
-    logger.debug('Repo root: %s' % repo_root)
-    logger.debug('Repo name: %s' % repo_name)
-    target_dir = os.path.join(repo_root, 'targets')
-    logger.debug('Target dir: %s' % target_dir)
-    target_list = [f.path for f in os.scandir(target_dir) if f.is_dir()]
-    target_names = []
-    logger.critical('\nIris doesn\'t contain \'%s\' target module.' % target)
+                for idx, target in enumerate(target_list):
+                    if 'pycache' not in target:
+                        target_names.append(os.path.basename(os.path.normpath(target)))
 
-    for idx, target in enumerate(target_list):
-        if 'pycache' not in target:
-            target_names.append(os.path.basename(os.path.normpath(target)))
+                logger.critical('Did you mean to choose one of these instead?')
+                for target in target_names:
+                    logger.critical('\t%s' % target)
+                logger.critical('')
 
-    logger.critical('Did you mean to choose one of these instead?')
-    for target in target_names:
-        logger.critical('\t%s' % target)
-    logger.critical('')
-
-    return False
+                return False
+            else:
+                path_warning(target_dir)
+                return False
 
 
 def collect_tests():
@@ -63,16 +68,7 @@ def collect_tests():
         else:
             tests_dir = os.path.join(PathManager.get_tests_dir(), target)
             if not os.path.exists(tests_dir):
-                logger.error('Path not found: %s' % tests_dir)
-                logger.critical('This can happen when Iris can\'t find your code root.')
-                logger.critical('Try setting these environment variables:')
-                if OSHelper.is_windows():
-                    logger.critical('\tsetx IRIS_CODE_ROOT %CD%\n')
-                    logger.critical('\tsetx PYTHONPATH %CD%\n')
-                    logger.critical('\nYou must restart your terminal for this to take effect.\n')
-                else:
-                    logger.critical('\texport IRIS_CODE_ROOT=$PWD\n')
-                    logger.critical('\texport PYTHONPATH=$PWD\n')
+                path_warning(tests_dir)
                 return test_list
 
             logger.debug('Path %s found. Checking content ...', tests_dir)
@@ -108,3 +104,17 @@ def collect_tests():
                 logger.debug('List of all tests found: [%s]' % ', '.join(map(str, test_list)))
 
     return test_list
+
+
+def path_warning(dir):
+    logger.error('Path not found: %s' % dir)
+    logger.critical('This can happen when Iris can\'t find your code root.')
+    logger.critical('Try setting these environment variables:')
+    if OSHelper.is_windows():
+        logger.critical('\tsetx IRIS_CODE_ROOT %CD%\n')
+        logger.critical('\tsetx PYTHONPATH %CD%\n')
+        logger.critical('\nYou must restart your terminal for this to take effect.\n')
+    else:
+        logger.critical('\texport IRIS_CODE_ROOT=$PWD\n')
+        logger.critical('\texport PYTHONPATH=$PWD\n')
+

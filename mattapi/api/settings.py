@@ -73,6 +73,7 @@ class _Settings:
     DEFAULT_UI_DELAY_SHORT = 0.5
     DEFAULT_UI_DELAY_LONG = 2.5
     DEFAULT_SYSTEM_DELAY = 5
+    PACKAGE_ROOT = os.path.realpath(os.path.split(__file__)[0] + '/../..')
 
 
     def __init__(self, wait_scan_rate=DEFAULT_WAIT_SCAN_RATE, type_delay=DEFAULT_TYPE_DELAY,
@@ -119,7 +120,7 @@ class _Settings:
         if os.environ.get('IRIS_CODE_ROOT') is not None:
             self._code_root = os.environ.get('IRIS_CODE_ROOT')
         else:
-            self._code_root = os.path.realpath(os.path.split(__file__)[0] + '/../..')
+            self._code_root = Settings.PACKAGE_ROOT
         sys.path.append(self._code_root)
 
     @property
