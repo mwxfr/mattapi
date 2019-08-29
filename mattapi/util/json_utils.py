@@ -14,6 +14,7 @@ import git
 import pytest
 
 from mattapi.api.os_helpers import OSHelper
+from mattapi.api.settings import Settings
 from mattapi.util.arg_parser import get_core_args
 from mattapi.util.path_manager import PathManager
 from mattapi.util.system import get_python_version
@@ -26,7 +27,12 @@ def create_target_json():
     if not use_cached_target_file():
         logging.info('Preparing data for the Control Center.')
         logging.info('This may take a minute.')
-        master_target_dir = os.path.join(PathManager.get_module_dir(), 'targets')
+
+        if os.path.exists(os.path.join(PathManager.get_module_dir(), 'targets')):
+            master_target_dir = os.path.join(PathManager.get_module_dir(), 'targets')
+        else:
+            master_target_dir = os.path.join(Settings.PACKAGE_ROOT, 'mattapi', 'targets')
+
         target_list = [f for f in os.listdir(master_target_dir) if not f.startswith('__') and not f.startswith('.')]
 
         targets = []

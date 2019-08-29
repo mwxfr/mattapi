@@ -2,12 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import importlib
 import logging
 import os
 import shutil
 import subprocess
-import sys
 import time
 from distutils.dir_util import copy_tree
 
@@ -31,7 +29,7 @@ from mattapi.util.local_web_server import LocalWebServer
 from mattapi.util.logger_manager import initialize_logger
 from mattapi.util.path_manager import PathManager
 from mattapi.util.system import check_7zip, fix_terminal_encoding, init_tesseract_path, reset_terminal_encoding
-from mattapi.util.target_loader import collect_tests
+from mattapi.util.target_loader import collect_tests, get_target
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +66,10 @@ def main():
                 exit_iris('User cancelled run, closing Iris.', status=0)
 
         try:
-            target_plugin = get_target(args.target)
+            try:
+                target_plugin = get_target(args.target)
+            except Exception as e:
+                exit_iris('Problems getting target %s:\n%s' % (args.target, e), status=1)
             if settings is not None:
                 logger.debug('Passing settings to target: %s' % settings)
                 target_plugin.update_settings(settings)
@@ -105,41 +106,6 @@ def show_control_center():
         return False
     else:
         return False
-
-
-def get_target(target_name):
-    logger.info('Desired target: %s' % target_name)
-    logger.info('Desired module: targets.%s.main' %  target_name)
-    try:
-        target = import_package_by_name(target_name, Settings.PACKAGE_ROOT)
-        return target
-    except Exception as e:
-        logger.error(e)
-        try:
-            target = import_package_by_name(target_name, Settings.CODE_ROOT)
-            return target
-        except Exception as e:
-            logger.error(e)
-            exit_iris('Can\'t find default Target class.', status=1)
-
-
-def import_package_by_name(target_name, path):
-    sys.path.append(path)
-    logger.debug('Looking for %s in path %s' % (target_name, path))
-    try:
-        my_module = importlib.import_module('targets.%s.main' % target_name)
-        logger.info('Successful import!')
-        try:
-            target_plugin = my_module.Target()
-            logger.info('Found target named %s' % target_plugin.target_name)
-            return target_plugin
-        except NameError:
-            raise Exception('Target %s not found in path %s' % (target_name, path))
-    except ImportError as e:
-        if e.name.__contains__('Xlib') and not OSHelper.is_linux():
-            pass
-        else:
-            exit_iris('Problems importing module:\n%s' % e, status=1)
 
 
 def initialize_platform(args):
@@ -189,7 +155,12 @@ def init_control_center():
     cc_assets_path = os.path.join(os.path.realpath(os.path.split(__file__)[0] + '/..'), 'control_center', 'assets')
     logger.debug('Copying Control Center assets from %s to %s' % (cc_assets_path, get_core_args().workdir))
     copy_tree(cc_assets_path, get_core_args().workdir)
-    targets_dir = os.path.join(PathManager.get_module_dir(), 'targets')
+    if os.path.exists(os.path.join(PathManager.get_module_dir(), 'targets')):
+        logger.debug('Looking for CC files in module directory.')
+        targets_dir = os.path.join(PathManager.get_module_dir(), 'targets')
+    else:
+        logger.debug('Looking for CC files in package directory.')
+        targets_dir = os.path.join(Settings.PACKAGE_ROOT, 'mattapi', 'targets')
 
     exclude_dirs = {'__pycache__'}
     for path, dirs, files in PathManager.sorted_walk(targets_dir):
@@ -255,15 +226,13 @@ def launch_control_center():
 
 
 def migrate_data():
-    iris_1_install = os.path.join(os.path.expanduser('~'), '.iris', 'data', 'all_args.json')
-    logger.debug('Old Iris 1 install exists: %s' % os.path.exists(iris_1_install))
-
-    if os.path.exists(iris_1_install):
+    if os.path.exists(os.path.join(os.path.expanduser('~'), '.iris', 'data', 'all_args.json')):
+        logger.debug('Old Iris 1 install exists, renaming to \'.iris_old\'.' )
         os.rename(os.path.join(os.path.expanduser('~'), '.iris'), os.path.join(os.path.expanduser('~'), '.iris_old'))
 
-    # TBD: what to do with previous Iris 2.0 folder
-    old_iris_2_install = os.path.join(os.path.expanduser('~'), '.iris2')
-    logger.debug('Old Iris 2 install exists: %s' % os.path.exists(old_iris_2_install))
+    if os.path.exists(os.path.join(os.path.expanduser('~'), '.iris2')):
+        logger.debug('Old Iris 2 install exists, renaming to \'.iris2_old\'.')
+        os.rename(os.path.join(os.path.expanduser('~'), '.iris2'), os.path.join(os.path.expanduser('~'), '.iris2_old'))
 
 
 def exit_iris(message, status=0):

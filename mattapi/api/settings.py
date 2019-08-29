@@ -91,7 +91,7 @@ class _Settings:
                  highlight_thickness=DEFAULT_HIGHLIGHT_THICKNESS,
                  mouse_scroll_step=DEFAULT_MOUSE_SCROLL_STEP,
                  key_shortcut_delay=DEFAULT_KEY_SHORTCUT_DELAY,
-                 site_load_timeout=DEFAULT_SITE_LOAD_TIMEOUT):
+                 site_load_timeout=DEFAULT_SITE_LOAD_TIMEOUT, package_root=PACKAGE_ROOT):
 
         self.wait_scan_rate = wait_scan_rate
         self._type_delay = type_delay
@@ -120,7 +120,7 @@ class _Settings:
         if os.environ.get('IRIS_CODE_ROOT') is not None:
             self._code_root = os.environ.get('IRIS_CODE_ROOT')
         else:
-            self._code_root = Settings.PACKAGE_ROOT
+            self._code_root = package_root
         sys.path.append(self._code_root)
 
     @property

@@ -6,7 +6,7 @@ import platform
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = 'mattapi'
-PACKAGE_VERSION = '0.94'
+PACKAGE_VERSION = '0.99.01'
 
 INSTALL_REQUIRES = [
 'coloredlogs==10.0',
@@ -18,7 +18,7 @@ INSTALL_REQUIRES = [
 'image==1.5.27',
 'pyperclip==1.7.0',
 'packaging==19.0',
-'pynput==1.4',
+'pynput==1.4.2',
 'gitpython==2.1.11',
 'pytest==5.0.1',
 'pygithub==1.43.8',
