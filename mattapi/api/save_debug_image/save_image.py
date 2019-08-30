@@ -29,12 +29,14 @@ def save_debug_image(needle, haystack, locations):
     :param List[Location] || Location locations: Location or list of Location as coordinates.
     :return: None.
     """
+    logger.debug('Debug image is enabled: %s' % Settings.debug_image)
     if Settings.debug_image is False:
         return
 
     w, h = needle.get_size()
 
     path = Settings.debug_image_path
+    logger.debug('Debug image directory path: %s' % path)
 
     timestamp_str = re.sub('[ :.-]', '_', str(datetime.datetime.now()))
     resolution_str = '_not_found' if len(locations) == 0 else '_found'
@@ -42,6 +44,7 @@ def save_debug_image(needle, haystack, locations):
     temp_f = timestamp_str + resolution_str
 
     file_name = '%s.jpg' % os.path.join(path, temp_f)
+    logger.debug('Debug image location: %s' % file_name)
 
     if not os.path.exists(path):
         os.makedirs(path)
@@ -74,10 +77,12 @@ def save_debug_ocr_image(text, haystack, text_occurrences):
     :param List[Location] || Location text_occurrences: Location or list of Location as coordinates.
     :return: None.
     """
+    logger.debug('Debug image is enabled: %s' % Settings.debug_image)
     if Settings.debug_image is False:
         return
 
     path = Settings.debug_image_path
+    logger.debug('Debug image directory path: %s' % path)
 
     timestamp_str = re.sub('[ :.-]', '_', str(datetime.datetime.now()))
     resolution_str = '_not_found' if len(text_occurrences) == 0 else '_found'
@@ -85,6 +90,7 @@ def save_debug_ocr_image(text, haystack, text_occurrences):
     temp_f = timestamp_str + resolution_str
 
     file_name = '%s.jpg' % os.path.join(path, temp_f)
+    logger.debug('Debug image location: %s' % file_name)
 
     if not os.path.exists(path):
         os.makedirs(path)
