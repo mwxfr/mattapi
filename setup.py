@@ -31,7 +31,7 @@ INSTALL_REQUIRES = [
 'mozrunner==7.4.0',
 'mss==4.0.1',
 'more-itertools==5.0.0',
-'psutil==5.6.3',
+'psutil==5.6.6',
 'funcy==1.11'
 ]
 
