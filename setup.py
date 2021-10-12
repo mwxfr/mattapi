@@ -12,7 +12,7 @@ INSTALL_REQUIRES = [
 'coloredlogs==10.0',
 'pyautogui==0.9.41',
 'python-dateutil==2.8.0',
-'opencv-python==4.0.0.21',
+'opencv-python==4.2.0.32',
 'pytesseract==0.2.6',
 'numpy==1.16.1',
 'image==1.5.27',
