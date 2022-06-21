@@ -14,7 +14,7 @@ INSTALL_REQUIRES = [
 'python-dateutil==2.8.0',
 'opencv-python==4.0.0.21',
 'pytesseract==0.2.6',
-'numpy==1.16.1',
+'numpy==1.22.0',
 'image==1.5.27',
 'pyperclip==1.7.0',
 'packaging==19.0',
